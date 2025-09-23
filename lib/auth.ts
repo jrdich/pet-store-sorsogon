@@ -20,15 +20,33 @@ export const authOptions: NextAuthOptions = {
 
         try {
           await connectDB()
-          const user = await User.findOne({ email: credentials.email })
+          console.log("MongoDB connected successfully")
+          
+          console.log("Searching for user with email:", credentials.email)
+          // Case insensitive email search
+          const email = credentials.email.toLowerCase()
+          const user = await User.findOne({ 
+            email: { $regex: new RegExp(`^${email}$`, 'i') } 
+          })
+          console.log("User search completed", { found: !!user, email: credentials.email })
+          if (user) {
+            console.log("User data:", { 
+              id: user._id,
+              email: user.email,
+              hasPassword: !!user.password
+            })
+          }
 
           if (!user || !user.password) {
+            console.log("User not found or password missing")
             return null
           }
 
           const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+          console.log("Password validation completed", { isValid: isPasswordValid })
 
           if (!isPasswordValid) {
+            console.log("Invalid password")
             return null
           }
 
@@ -40,6 +58,9 @@ export const authOptions: NextAuthOptions = {
           }
         } catch (error) {
           console.error("Auth error:", error)
+          if (error instanceof Error) {
+            console.error("Error details:", error.message)
+          }
           return null
         }
       },

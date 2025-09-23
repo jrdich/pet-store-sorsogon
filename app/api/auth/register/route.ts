@@ -13,8 +13,10 @@ export async function POST(request: NextRequest) {
 
     await connectDB()
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email })
+    // Check if user already exists (case-insensitive)
+    const existingUser = await User.findOne({ 
+      email: { $regex: new RegExp(`^${email}$`, 'i') }
+    })
     if (existingUser) {
       return NextResponse.json({ error: "User already exists" }, { status: 400 })
     }
@@ -25,7 +27,7 @@ export async function POST(request: NextRequest) {
     // Create user
     const user = await User.create({
       name,
-      email,
+      email: email.toLowerCase(), // Store email in lowercase
       password: hashedPassword,
       role: "user",
     })
