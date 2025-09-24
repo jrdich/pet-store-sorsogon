@@ -10,6 +10,8 @@ import { Textarea } from "../ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Send } from "lucide-react"
+import { sendEmail } from "../../lib/resend";
+import { toast } from "sonner" // Add toast for notifications
 
 export function ContactForm() {
   const [isLoading, setIsLoading] = useState(false)
@@ -31,23 +33,52 @@ export function ContactForm() {
     { value: "other", label: "Other" },
   ]
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   setIsLoading(true)
+
+  //   // Simulate form submission
+  //   await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  //   setSuccess(true)
+  //   setIsLoading(false)
+  //   setFormData({
+  //     name: "",
+  //     email: "",
+  //     phone: "",
+  //     subject: "",
+  //     message: "",
+  //   })
+  // }
+
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      const result = await sendEmail(formData)
 
-    setSuccess(true)
-    setIsLoading(false)
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    })
+      if (result.success) {
+        setSuccess(true)
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+        })
+        toast.success("Message sent successfully!")
+      } else {
+        toast.error("Failed to send message. Please try again.")
+      }
+    } catch (error) {
+      console.error("Form submission error:", error)
+      toast.error("Something went wrong. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
+
 
   if (success) {
     return (
@@ -64,6 +95,8 @@ export function ContactForm() {
       </Card>
     )
   }
+
+
 
   return (
     <Card className="max-w-2xl mx-auto">
@@ -142,7 +175,11 @@ export function ContactForm() {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={isLoading || !formData.name || !formData.email || !formData.subject || !formData.message}
+          >
             <Send className="mr-2 h-4 w-4" />
             {isLoading ? "Sending Message..." : "Send Message"}
           </Button>
