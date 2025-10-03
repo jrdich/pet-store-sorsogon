@@ -4,7 +4,15 @@ import { Card, CardContent, CardFooter } from "../ui/card"
 import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
 import { useCart } from "../../lib/cart-context"
-import { ShoppingCart, Star } from "lucide-react"
+import { ShoppingCart, Star, Loader2, Check } from "lucide-react"
+import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog"
 
 interface ProductCardProps {
   id: string
@@ -30,8 +38,15 @@ export function ProductCard({
   featured,
 }: ProductCardProps) {
   const { addToCart } = useCart()
+  const [isLoading, setIsLoading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
 
-    const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    setIsLoading(true)
+    
+    // Simulate loading for better UX
+    await new Promise(resolve => setTimeout(resolve, 500))
+    
     addToCart({
       id,
       name,
@@ -39,6 +54,12 @@ export function ProductCard({
       image,
       category,
     })
+    
+    setIsLoading(false)
+    setShowSuccess(true)
+    
+    // Auto close success modal after 2 seconds
+    setTimeout(() => setShowSuccess(false), 2000)
   }
 
   return (
@@ -82,11 +103,35 @@ export function ProductCard({
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
-        <Button onClick={handleAddToCart} className="w-full group-hover:bg-primary/90" disabled={stock === 0}>
-          <ShoppingCart className="w-4 h-4 mr-2" />
-          {stock === 0 ? "Out of Stock" : "Add to Cart"}
+        <Button 
+          onClick={handleAddToCart} 
+          className="w-full group-hover:bg-primary/90" 
+          disabled={stock === 0 || isLoading}
+        >
+          {isLoading ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <ShoppingCart className="w-4 h-4 mr-2" />
+          )}
+          {stock === 0 ? "Out of Stock" : isLoading ? "Adding..." : "Add to Cart"}
         </Button>
       </CardFooter>
+
+      <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <Check className="w-5 h-5 text-green-600" />
+              </div>
+              Added to Cart!
+            </DialogTitle>
+            <DialogDescription>
+              <strong>{name}</strong> has been successfully added to your cart.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </Card>
   )
 }

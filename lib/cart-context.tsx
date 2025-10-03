@@ -121,11 +121,17 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 export function CartProvider({ children }: { children: ReactNode }) {
   const { data: session } = useSession()
   const [isInitialized, setIsInitialized] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [state, dispatch] = useReducer(cartReducer, {
     items: [],
     totalItems: 0,
     totalAmount: 0,
   })
+
+  // Get user-specific localStorage key
+  const getCartKey = (userId?: string) => {
+    return userId ? `cart_${userId}` : "cart_guest"
+  }
 
   // Load cart from localStorage or API on mount and when session changes
   useEffect(() => {
@@ -134,8 +140,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const loadCart = async () => {
       console.log("Loading cart...");
       
-      // First, try to load from localStorage
-      const savedCart = localStorage.getItem("cart")
+      const userId = session?.user?.id
+      const cartKey = getCartKey(userId)
+      
+      // Clear cart if user changed
+      if (currentUserId !== userId) {
+        console.log("User changed, clearing cart");
+        dispatch({ type: "CLEAR_CART" })
+        setCurrentUserId(userId || null)
+      }
+      
+      // First, try to load from user-specific localStorage
+      const savedCart = localStorage.getItem(cartKey)
       let localCartItems: CartItem[] = []
       
       if (savedCart) {
@@ -201,7 +217,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return () => {
       isSubscribed = false
     }
-  }, [session])
+  }, [session, currentUserId])
 
   // Save cart to localStorage or API when cart changes
   useEffect(() => {
@@ -210,8 +226,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const saveCart = async () => {
       console.log("Saving cart items:", state.items);
       
-      // Always save to localStorage
-      localStorage.setItem("cart", JSON.stringify(state.items))
+      const userId = session?.user?.id
+      const cartKey = getCartKey(userId)
+      
+      // Always save to user-specific localStorage
+      localStorage.setItem(cartKey, JSON.stringify(state.items))
 
       if (session?.user) {
         try {
@@ -241,6 +260,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(delayedSave)
     
   }, [state.items, session, isInitialized])
+
+  // Clear cart and localStorage when user signs out
+  useEffect(() => {
+    if (!session?.user && currentUserId) {
+      console.log("User signed out, clearing cart");
+      dispatch({ type: "CLEAR_CART" })
+      // Clear all user-specific cart data from localStorage
+      const keys = Object.keys(localStorage).filter(key => key.startsWith('cart_'))
+      keys.forEach(key => localStorage.removeItem(key))
+      setCurrentUserId(null)
+    }
+  }, [session, currentUserId])
 
   const addToCart = (item: Omit<CartItem, "quantity">) => {
     dispatch({ type: "ADD_ITEM", payload: item })
