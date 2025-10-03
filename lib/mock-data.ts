@@ -9,6 +9,14 @@ const createObjectId = (num: number) => {
   return hexString
 }
 
+// Mock vendors with GCash numbers for testing
+export const mockVendors = [
+  { id: "vendor-1", name: "PawMart Supplies", gcashNumber: "09123456789" },
+  { id: "vendor-2", name: "Pet Paradise Store", gcashNumber: "09234567890" },
+  { id: "vendor-3", name: "Furry Friends Shop", gcashNumber: "09345678901" },
+  { id: "vendor-4", name: "Animal Care Plus", gcashNumber: "09456789012" },
+]
+
 export const mockProducts = [
   {
     id: createObjectId(1),
@@ -20,6 +28,7 @@ export const mockProducts = [
     image: "/premium-pet-food-bowls.jpg",
     stock: 25,
     featured: true,
+    vendor: mockVendors[0],
   },
   {
     id: createObjectId(2),
@@ -31,6 +40,7 @@ export const mockProducts = [
     image: "/colorful-pet-toys.jpg",
     stock: 15,
     featured: true,
+    vendor: mockVendors[1],
   },
   {
     id: createObjectId(3),
@@ -42,6 +52,7 @@ export const mockProducts = [
     image: "/pet-collars-and-accessories.jpg",
     stock: 30,
     featured: false,
+    vendor: mockVendors[2],
   },
   {
     id: createObjectId(4),
@@ -53,6 +64,7 @@ export const mockProducts = [
     image: "/pet-health-care-products.jpg",
     stock: 20,
     featured: true,
+    vendor: mockVendors[3],
   },
   {
     id: createObjectId(5),
@@ -64,6 +76,7 @@ export const mockProducts = [
     image: "/pet-grooming-kit.png",
     stock: 12,
     featured: false,
+    vendor: mockVendors[0],
   },
   {
     id: createObjectId(6),
@@ -75,6 +88,7 @@ export const mockProducts = [
     image: "/cozy-pet-bed.jpg",
     stock: 18,
     featured: true,
+    vendor: mockVendors[1],
   },
   {
     id: createObjectId(7),
@@ -86,6 +100,7 @@ export const mockProducts = [
     image: "/bird-seed-mix.jpg",
     stock: 40,
     featured: false,
+    vendor: mockVendors[2],
   },
   {
     id: createObjectId(8),
@@ -97,6 +112,7 @@ export const mockProducts = [
     image: "/aquarium-filter.png",
     stock: 8,
     featured: false,
+    vendor: mockVendors[3],
   },
   {
     id: createObjectId(9),
@@ -108,6 +124,7 @@ export const mockProducts = [
     image: "/small-pet-habitat.jpg",
     stock: 5,
     featured: true,
+    vendor: mockVendors[0],
   },
   {
     id: createObjectId(10),
@@ -119,10 +136,12 @@ export const mockProducts = [
     image: "/dental-chew-treats.jpg",
     stock: 35,
     featured: false,
+    vendor: mockVendors[1],
   },
 ]
 
 export const mockServices = [
+  // Professional Grooming Services
   {
     id: "grooming-basic",
     name: "Basic Grooming Package",
@@ -148,6 +167,61 @@ export const mockServices = [
     ],
   },
   {
+    id: "grooming-deluxe",
+    name: "Deluxe Spa Treatment",
+    description: "Luxury spa experience with deep conditioning and massage",
+    price: 120,
+    duration: "3-4 hours",
+    image: "/pet-spa-treatment.jpg",
+    features: ["Deep conditioning treatment", "Relaxing massage", "Pedicure with nail art", "Cologne application", "Photo session"],
+  },
+  {
+    id: "grooming-cat",
+    name: "Feline Grooming Special",
+    description: "Specialized grooming services designed specifically for cats",
+    price: 55,
+    duration: "1.5-2 hours",
+    image: "/cat-grooming.jpg",
+    features: ["Gentle cat-specific shampoo", "De-shedding treatment", "Nail trimming", "Sanitary trim"],
+  },
+  {
+    id: "grooming-puppy",
+    name: "Puppy Introduction Package",
+    description: "Gentle first grooming experience for puppies under 6 months",
+    price: 35,
+    duration: "45 minutes",
+    image: "/puppy-grooming.jpg",
+    features: ["Gentle introduction to grooming", "Mini bath", "Nail tip trim", "Positive reinforcement"],
+  },
+  {
+    id: "grooming-senior",
+    name: "Senior Pet Care Package",
+    description: "Gentle grooming services tailored for older pets with special needs",
+    price: 65,
+    duration: "2 hours",
+    image: "/senior-pet-grooming.jpg",
+    features: ["Extra gentle handling", "Therapeutic shampoo", "Joint-friendly positioning", "Health monitoring"],
+  },
+  {
+    id: "grooming-mobile",
+    name: "Mobile Grooming Service",
+    description: "Professional grooming at your doorstep with our mobile unit",
+    price: 95,
+    duration: "2-3 hours",
+    image: "/mobile-grooming.jpg",
+    features: ["At-home convenience", "Fully equipped mobile unit", "Stress-free environment", "Flexible scheduling"],
+  },
+  {
+    id: "grooming-show",
+    name: "Show Dog Preparation",
+    description: "Professional grooming for dog shows and competitions",
+    price: 150,
+    duration: "4-5 hours",
+    image: "/show-dog-grooming.jpg",
+    features: ["Breed-specific styling", "Show-quality finish", "Competition preparation", "Expert consultation"],
+  },
+  // Pet Boarding & Care Services
+  {
     id: "boarding-daily",
     name: "Daily Pet Boarding",
     description: "Safe and comfortable day care for your pets while you're away",
@@ -172,6 +246,61 @@ export const mockServices = [
     ],
   },
   {
+    id: "boarding-luxury",
+    name: "Luxury Pet Suite",
+    description: "Premium accommodation with extra amenities and personalized care",
+    price: 95,
+    duration: "24 hours",
+    image: "/luxury-pet-suite.jpg",
+    features: ["Spacious private suite", "Premium bedding", "Gourmet meals", "Daily grooming", "Webcam access"],
+  },
+  {
+    id: "boarding-medical",
+    name: "Medical Boarding Care",
+    description: "Specialized boarding for pets requiring medication or medical attention",
+    price: 85,
+    duration: "24 hours",
+    image: "/medical-pet-boarding.jpg",
+    features: ["Medication administration", "Health monitoring", "Vet-supervised care", "Special diet management"],
+  },
+  {
+    id: "boarding-puppy",
+    name: "Puppy Daycare Program",
+    description: "Socialization and care program designed specifically for puppies",
+    price: 45,
+    duration: "6-8 hours",
+    image: "/puppy-daycare.jpg",
+    features: ["Puppy socialization", "Potty training support", "Age-appropriate play", "Nap time supervision"],
+  },
+  {
+    id: "boarding-senior",
+    name: "Senior Pet Care Program",
+    description: "Gentle care and monitoring for elderly pets with special needs",
+    price: 75,
+    duration: "24 hours",
+    image: "/senior-pet-care.jpg",
+    features: ["Comfortable accommodations", "Gentle exercise", "Medication management", "Extra attention"],
+  },
+  {
+    id: "boarding-cat",
+    name: "Feline Boarding Sanctuary",
+    description: "Cat-only boarding facility with climbing trees and quiet spaces",
+    price: 55,
+    duration: "24 hours",
+    image: "/cat-boarding.jpg",
+    features: ["Cat-only environment", "Climbing structures", "Quiet spaces", "Interactive toys"],
+  },
+  {
+    id: "boarding-exotic",
+    name: "Exotic Pet Boarding",
+    description: "Specialized care for birds, reptiles, and other exotic pets",
+    price: 70,
+    duration: "24 hours",
+    image: "/exotic-pet-boarding.jpg",
+    features: ["Species-specific care", "Climate control", "Specialized diet", "Expert handling"],
+  },
+  // Training Programs
+  {
     id: "training-basic",
     name: "Basic Obedience Training",
     description: "Foundation training for puppies and young dogs",
@@ -194,5 +323,59 @@ export const mockServices = [
       "Aggression management",
       "One-on-one sessions",
     ],
+  },
+  {
+    id: "training-puppy",
+    name: "Puppy Kindergarten",
+    description: "Early socialization and basic training for puppies 8-16 weeks old",
+    price: 100,
+    duration: "6 weeks (45 min/week)",
+    image: "/puppy-kindergarten.jpg",
+    features: ["Early socialization", "Basic commands", "Bite inhibition", "Handling exercises"],
+  },
+  {
+    id: "training-behavioral",
+    name: "Behavioral Modification",
+    description: "Specialized training for dogs with anxiety, aggression, or other behavioral issues",
+    price: 300,
+    duration: "10 weeks (1 hour/week)",
+    image: "/behavioral-training.jpg",
+    features: ["Behavior assessment", "Customized training plan", "Desensitization techniques", "Owner education"],
+  },
+  {
+    id: "training-agility",
+    name: "Agility Training Course",
+    description: "Fun and challenging agility training for active dogs",
+    price: 180,
+    duration: "6 weeks (1 hour/week)",
+    image: "/agility-training.jpg",
+    features: ["Obstacle course training", "Physical fitness", "Mental stimulation", "Competition preparation"],
+  },
+  {
+    id: "training-therapy",
+    name: "Therapy Dog Certification",
+    description: "Training and certification program for therapy dog candidates",
+    price: 350,
+    duration: "12 weeks (1 hour/week)",
+    image: "/therapy-dog-training.jpg",
+    features: ["Temperament evaluation", "Public access training", "Certification preparation", "Ongoing support"],
+  },
+  {
+    id: "training-private",
+    name: "Private Training Sessions",
+    description: "One-on-one personalized training sessions in your home",
+    price: 80,
+    duration: "1 hour",
+    image: "/private-training.jpg",
+    features: ["Customized training plan", "In-home convenience", "Flexible scheduling", "Family involvement"],
+  },
+  {
+    id: "training-cat",
+    name: "Feline Behavior Training",
+    description: "Behavior modification and training specifically designed for cats",
+    price: 150,
+    duration: "4 weeks (45 min/week)",
+    image: "/cat-training.jpg",
+    features: ["Litter box training", "Scratching solutions", "Aggression management", "Environmental enrichment"],
   },
 ]

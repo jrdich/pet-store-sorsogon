@@ -54,7 +54,7 @@ export function ServiceCard({ id, name, description, price, duration, image, fea
           ))}
         </div>
 
-        <div className="text-2xl font-bold text-primary">${price}</div>
+        <div className="text-2xl font-bold text-primary">₱{price}</div>
       </CardContent>
 
       <CardFooter className="p-6 pt-0">

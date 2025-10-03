@@ -1,6 +1,6 @@
 import { Header } from "../../components/navigation/header"
 import { Footer } from "../../components/footer"
-import { ServiceCard } from "../../components/services/service-card"
+import { ServiceSlideshow } from "../../components/services/service-slideshow"
 import { Card, CardContent } from "../../components/ui/card"
 import { Button } from "../../components/ui/button"
 import { Scissors, Heart, GraduationCap, Home, Clock, Shield, Award } from "lucide-react"
@@ -110,11 +110,10 @@ export default function ServicesPage() {
                   <p className="text-muted-foreground max-w-2xl mx-auto">{category.description}</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {category.services.map((service) => (
-                    <ServiceCard key={service.id} {...service} />
-                  ))}
-                </div>
+                <ServiceSlideshow 
+                  services={category.services} 
+                  title={`${category.title} Services`}
+                />
               </div>
             ))}
           </div>
