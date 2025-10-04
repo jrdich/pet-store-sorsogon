@@ -1,20 +1,27 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Header } from "../../components/navigation/header"
 import { Footer } from "../../components/footer"
 import { ProductCard } from "../../components/store/product-card"
 import { ProductFilters } from "../../components/store/product-filters"
+import { AddProductModal } from "../../components/store/add-product-modal"
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
-import { Search, Grid, List } from "lucide-react"
+import { Search, Grid, List, Plus } from "lucide-react"
 import { mockProducts } from "../../lib/mock-data"
+import { Pagination } from "../../components/ui/pagination"
 
 export default function StorePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [sortBy, setSortBy] = useState("featured")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [products, setProducts] = useState(mockProducts)
+  const [dbProducts, setDbProducts] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 9
   const [filters, setFilters] = useState({
     categories: [] as string[],
     petTypes: [] as string[],
@@ -22,8 +29,40 @@ export default function StorePage() {
     inStock: false,
   })
 
-  const filteredProducts = useMemo(() => {
-    const products = mockProducts.filter((product) => {
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('/api/products')
+      if (response.ok) {
+        const data = await response.json()
+        setDbProducts(data)
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error)
+    }
+  }
+
+  const handleProductAdded = () => {
+    fetchProducts()
+    setCurrentPage(1)
+  }
+
+  const handleFiltersChange = (newFilters: any) => {
+    setFilters(newFilters)
+    setCurrentPage(1)
+  }
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query)
+    setCurrentPage(1)
+  }
+
+  const { filteredProducts, totalPages } = useMemo(() => {
+    const allProducts = [...products, ...dbProducts]
+    const filtered = allProducts.filter((product) => {
       // Search filter
       if (searchQuery && !product.name.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false
@@ -55,22 +94,26 @@ export default function StorePage() {
     // Sort products
     switch (sortBy) {
       case "price-low":
-        products.sort((a, b) => a.price - b.price)
+        filtered.sort((a, b) => a.price - b.price)
         break
       case "price-high":
-        products.sort((a, b) => b.price - a.price)
+        filtered.sort((a, b) => b.price - a.price)
         break
       case "name":
-        products.sort((a, b) => a.name.localeCompare(b.name))
+        filtered.sort((a, b) => a.name.localeCompare(b.name))
         break
       case "featured":
       default:
-        products.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
+        filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
         break
     }
 
-    return products
-  }, [searchQuery, sortBy, filters])
+    const totalPages = Math.ceil(filtered.length / itemsPerPage)
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const paginatedProducts = filtered.slice(startIndex, startIndex + itemsPerPage)
+
+    return { filteredProducts: paginatedProducts, totalPages, totalItems: filtered.length }
+  }, [searchQuery, sortBy, filters, products, dbProducts, currentPage, itemsPerPage])
 
   return (
     <div className="min-h-screen bg-background">
@@ -79,10 +122,18 @@ export default function StorePage() {
       <main className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">Pet Store</h1>
-          <p className="text-muted-foreground">
-            Discover our wide selection of premium pet products for all your furry, feathered, and finned friends.
-          </p>
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h1 className="text-3xl font-bold mb-4">Pet Store</h1>
+              <p className="text-muted-foreground">
+                Discover our wide selection of premium pet products for all your furry, feathered, and finned friends.
+              </p>
+            </div>
+            <Button onClick={() => setShowAddModal(true)} className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Add Product
+            </Button>
+          </div>
         </div>
 
         {/* Search and Controls */}
@@ -92,7 +143,7 @@ export default function StorePage() {
             <Input
               placeholder="Search products..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -124,14 +175,14 @@ export default function StorePage() {
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
           <div className="lg:col-span-1">
-            <ProductFilters onFiltersChange={setFilters} />
+            <ProductFilters onFiltersChange={handleFiltersChange} />
           </div>
 
           {/* Products Grid */}
           <div className="lg:col-span-3">
             <div className="mb-4 flex items-center justify-between">
               <p className="text-muted-foreground">
-                Showing {filteredProducts.length} of {mockProducts.length} products
+                Showing {((currentPage - 1) * itemsPerPage) + 1}-{Math.min(currentPage * itemsPerPage, (products.length + dbProducts.length))} of {products.length + dbProducts.length} products
               </p>
             </div>
 
@@ -145,17 +196,31 @@ export default function StorePage() {
                 </Button>
               </div>
             ) : (
-              <div className={`grid gap-6 ${viewMode === "grid" ? "md:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"}`}>
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} {...product} />
-                ))}
-              </div>
+              <>
+                <div className={`grid gap-6 ${viewMode === "grid" ? "md:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"}`}>
+                  {filteredProducts.map((product) => (
+                    <ProductCard key={product.id || product._id} {...product} />
+                  ))}
+                </div>
+                
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </>
             )}
           </div>
         </div>
       </main>
 
       <Footer />
+      
+      <AddProductModal 
+        open={showAddModal} 
+        onOpenChange={setShowAddModal}
+        onProductAdded={handleProductAdded}
+      />
     </div>
   )
 }

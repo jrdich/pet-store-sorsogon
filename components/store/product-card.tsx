@@ -15,7 +15,8 @@ import {
 } from "../ui/dialog"
 
 interface ProductCardProps {
-  id: string
+  id?: string
+  _id?: string
   name: string
   description: string
   price: number
@@ -24,10 +25,12 @@ interface ProductCardProps {
   image: string
   stock: number
   featured: boolean
+  vendor?: { name: string }
 }
 
 export function ProductCard({
   id,
+  _id,
   name,
   description,
   price,
@@ -36,6 +39,7 @@ export function ProductCard({
   image,
   stock,
   featured,
+  vendor,
 }: ProductCardProps) {
   const { addToCart } = useCart()
   const [isLoading, setIsLoading] = useState(false)
@@ -48,7 +52,7 @@ export function ProductCard({
     await new Promise(resolve => setTimeout(resolve, 500))
     
     addToCart({
-      id,
+      id: id || _id?.toString() || '',
       name,
       price,
       image,
@@ -95,7 +99,7 @@ export function ProductCard({
 
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-2xl font-bold text-primary">${price.toFixed(2)}</span>
+              <span className="text-2xl font-bold text-primary">₱{price.toFixed(2)}</span>
               <div className="text-xs text-muted-foreground">{stock} in stock</div>
             </div>
           </div>

@@ -32,30 +32,30 @@ export function CartSummary() {
         <div className="space-y-2">
           <div className="flex justify-between">
             <span>Subtotal ({state.totalItems} items)</span>
-            <span>${state.totalAmount.toFixed(2)}</span>
+            <span>₱{state.totalAmount.toFixed(2)}</span>
           </div>
 
           <div className="flex justify-between">
             <span>Shipping</span>
-            <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+            <span>{shipping === 0 ? "Free" : `₱{shipping.toFixed(2)}`}</span>
           </div>
 
           <div className="flex justify-between">
             <span>Tax</span>
-            <span>${tax.toFixed(2)}</span>
+            <span>₱{tax.toFixed(2)}</span>
           </div>
 
           <div className="border-t pt-2">
             <div className="flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>₱{total.toFixed(2)}</span>
             </div>
           </div>
         </div>
 
         {state.totalAmount < 50 && (
           <div className="text-sm text-muted-foreground bg-muted p-3 rounded-lg">
-            Add ${(50 - state.totalAmount).toFixed(2)} more for free shipping!
+            Add ₱{(50 - state.totalAmount).toFixed(2)} more for free shipping!
           </div>
         )}
 
