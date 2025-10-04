@@ -16,6 +16,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { CalendarIcon, Clock } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "../../lib/utils"
+import { sendAppointmentEmail } from "../../lib/resend"
+import { toast } from "sonner"
 
 export function AppointmentForm() {
   const { data: session } = useSession()
@@ -82,6 +84,26 @@ export function AppointmentForm() {
     }
 
     try {
+      // Send appointment email
+      const appointmentData = {
+        petName: formData.petName,
+        petType: formData.petType,
+        service: formData.service,
+        date: formData.date ? format(formData.date, "PPP") : "",
+        time: formData.time,
+        notes: formData.notes,
+        ownerName: session.user?.name || "Unknown",
+        ownerEmail: session.user?.email || "Unknown"
+      }
+
+      const emailResult = await sendAppointmentEmail(appointmentData)
+      
+      if (emailResult.success) {
+        toast.success("Appointment booked and email sent successfully!")
+      } else {
+        toast.error("Appointment booked but failed to send email notification")
+      }
+
       const response = await fetch("/api/appointments", {
         method: "POST",
         headers: {
@@ -106,6 +128,7 @@ export function AppointmentForm() {
       }
     } catch (error) {
       setError("Something went wrong")
+      toast.error("Failed to book appointment")
     } finally {
       setIsLoading(false)
     }
