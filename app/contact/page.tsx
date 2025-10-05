@@ -16,13 +16,13 @@ export default function ContactPage() {
     {
       icon: Phone,
       title: "Call Us",
-      details: ["Main: (555) 123-4567", "Emergency: (555) 123-4568", "Toll-free: 1-800-PAWSTORE"],
+      details: ["Main: (555) 123-4567", "Emergency: (555) 123-4568", "Toll-free: 1-800-PZS"],
       action: "Call Now",
     },
     {
       icon: Mail,
       title: "Email Us",
-      details: ["info@pawstore.com", "support@pawstore.com", "emergency@pawstore.com"],
+      details: ["info@pzs.com", "support@pzs.com", "emergency@pzs.com"],
       action: "Send Email",
     },
     {

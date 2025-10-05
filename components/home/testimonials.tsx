@@ -6,7 +6,7 @@ const testimonials = [
     name: "Sarah Johnson",
     role: "Dog Owner",
     content:
-      "PawStore has everything I need for my Golden Retriever. The quality is amazing and the veterinary services are top-notch!",
+      "PZS has everything I need for my Golden Retriever. The quality is amazing and the veterinary services are top-notch!",
     rating: 5,
     image: "/woman-and-loyal-companion.png",
   },
@@ -21,7 +21,7 @@ const testimonials = [
   {
     name: "Emily Rodriguez",
     role: "Multi-Pet Owner",
-    content: "From food to grooming to emergency care, PawStore takes care of all my pets' needs. Highly recommended!",
+    content: "From food to grooming to emergency care, PZS takes care of all my pets' needs. Highly recommended!",
     rating: 5,
     image: "/woman-with-multiple-pets.jpg",
   },

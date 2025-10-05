@@ -50,7 +50,7 @@ export function SignInForm() {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-        <CardDescription>Sign in to your PawStore account</CardDescription>
+        <CardDescription>Sign in to your PZS account</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">

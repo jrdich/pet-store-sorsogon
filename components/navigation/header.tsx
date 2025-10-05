@@ -46,7 +46,7 @@ export function Header() {
             <div className="h-8 w-8 rounded-full bg-gradient-to-r from-orange-400 to-pink-400 flex items-center justify-center">
               <Heart className="h-4 w-4 text-white" />
             </div>
-            <span className="text-xl font-bold text-foreground">PawStore</span>
+            <span className="text-xl font-bold text-foreground">PZS</span>
           </Link>
 
           {/* Desktop Navigation */}

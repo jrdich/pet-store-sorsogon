@@ -12,7 +12,7 @@ export function Footer() {
               <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
                 <Heart className="h-4 w-4" />
               </div>
-              <span className="text-xl font-bold">PawStore</span>
+              <span className="text-xl font-bold">PZS</span>
             </Link>
             <p className="text-primary-foreground/80">
               Your trusted partner in pet care, providing quality products and professional services for your beloved
@@ -73,7 +73,7 @@ export function Footer() {
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span className="text-primary-foreground/80">info@pawstore.com</span>
+                <span className="text-primary-foreground/80">info@pzs.com</span>
               </li>
               <li className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4" />
@@ -85,7 +85,7 @@ export function Footer() {
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center">
           <p className="text-primary-foreground/80">
-            © 2025 PawStore. All rights reserved. Made with ❤️ for pets and their families.
+            © 2025 PZS. All rights reserved. Made with ❤️ for pets and their families.
           </p>
         </div>
       </div>

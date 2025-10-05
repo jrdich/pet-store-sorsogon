@@ -9,7 +9,7 @@ import { CartProvider } from "../lib/cart-context"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: "PawStore - Everything Your Pet Needs",
+  title: "PZS - PetZoneSor",
   description: "Premium pet products and professional veterinary services",
   generator: "v0.app",
 }
