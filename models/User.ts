@@ -6,6 +6,8 @@ export interface IUser extends Document {
   password?: string
   image?: string
   role: "user" | "admin"
+  resetToken?: string
+  resetTokenExpiry?: Date
   createdAt: Date
   updatedAt: Date
 }
@@ -32,10 +34,21 @@ const UserSchema = new Schema<IUser>(
       enum: ["user", "admin"],
       default: "user",
     },
+    resetToken: {
+      type: String,
+    },
+    resetTokenExpiry: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
   },
 )
 
-export default mongoose.models.User || mongoose.model<IUser>("User", UserSchema)
+// Clear the cached model to ensure schema updates are applied
+if (mongoose.models.User) {
+  delete mongoose.models.User
+}
+
+export default mongoose.model<IUser>("User", UserSchema)
