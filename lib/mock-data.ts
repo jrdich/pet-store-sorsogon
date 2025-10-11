@@ -172,7 +172,7 @@ export const mockServices = [
     description: "Luxury spa experience with deep conditioning and massage",
     price: 120,
     duration: "3-4 hours",
-    image: "/pet-spa-treatment.jpg",
+    image: "/PG-1.jpg",
     features: ["Deep conditioning treatment", "Relaxing massage", "Pedicure with nail art", "Cologne application", "Photo session"],
   },
   {
@@ -181,7 +181,7 @@ export const mockServices = [
     description: "Specialized grooming services designed specifically for cats",
     price: 55,
     duration: "1.5-2 hours",
-    image: "/cat-grooming.jpg",
+    image: "/PG-2.jpg",
     features: ["Gentle cat-specific shampoo", "De-shedding treatment", "Nail trimming", "Sanitary trim"],
   },
   {
@@ -190,7 +190,7 @@ export const mockServices = [
     description: "Gentle first grooming experience for puppies under 6 months",
     price: 35,
     duration: "45 minutes",
-    image: "/puppy-grooming.jpg",
+    image: "/PG-3.jpg",
     features: ["Gentle introduction to grooming", "Mini bath", "Nail tip trim", "Positive reinforcement"],
   },
   {
@@ -199,7 +199,7 @@ export const mockServices = [
     description: "Gentle grooming services tailored for older pets with special needs",
     price: 65,
     duration: "2 hours",
-    image: "/senior-pet-grooming.jpg",
+    image: "/PG-4.jpg",
     features: ["Extra gentle handling", "Therapeutic shampoo", "Joint-friendly positioning", "Health monitoring"],
   },
   {
@@ -208,7 +208,7 @@ export const mockServices = [
     description: "Professional grooming at your doorstep with our mobile unit",
     price: 95,
     duration: "2-3 hours",
-    image: "/mobile-grooming.jpg",
+    image: "/PG-5.png",
     features: ["At-home convenience", "Fully equipped mobile unit", "Stress-free environment", "Flexible scheduling"],
   },
   {
@@ -217,7 +217,7 @@ export const mockServices = [
     description: "Professional grooming for dog shows and competitions",
     price: 150,
     duration: "4-5 hours",
-    image: "/show-dog-grooming.jpg",
+    image: "/PG-6.jpg",
     features: ["Breed-specific styling", "Show-quality finish", "Competition preparation", "Expert consultation"],
   },
   // Pet Boarding & Care Services
@@ -251,7 +251,7 @@ export const mockServices = [
     description: "Premium accommodation with extra amenities and personalized care",
     price: 95,
     duration: "24 hours",
-    image: "/luxury-pet-suite.jpg",
+    image: "/PBC-1.jpg",
     features: ["Spacious private suite", "Premium bedding", "Gourmet meals", "Daily grooming", "Webcam access"],
   },
   {
@@ -260,7 +260,7 @@ export const mockServices = [
     description: "Specialized boarding for pets requiring medication or medical attention",
     price: 85,
     duration: "24 hours",
-    image: "/medical-pet-boarding.jpg",
+    image: "/PBC-2.jpg",
     features: ["Medication administration", "Health monitoring", "Vet-supervised care", "Special diet management"],
   },
   {
@@ -269,7 +269,7 @@ export const mockServices = [
     description: "Socialization and care program designed specifically for puppies",
     price: 45,
     duration: "6-8 hours",
-    image: "/puppy-daycare.jpg",
+    image: "/PBC-3.jpg",
     features: ["Puppy socialization", "Potty training support", "Age-appropriate play", "Nap time supervision"],
   },
   {
@@ -278,7 +278,7 @@ export const mockServices = [
     description: "Gentle care and monitoring for elderly pets with special needs",
     price: 75,
     duration: "24 hours",
-    image: "/senior-pet-care.jpg",
+    image: "/PBC-4.jpg",
     features: ["Comfortable accommodations", "Gentle exercise", "Medication management", "Extra attention"],
   },
   {
@@ -287,7 +287,7 @@ export const mockServices = [
     description: "Cat-only boarding facility with climbing trees and quiet spaces",
     price: 55,
     duration: "24 hours",
-    image: "/cat-boarding.jpg",
+    image: "/PBC-5.jpg",
     features: ["Cat-only environment", "Climbing structures", "Quiet spaces", "Interactive toys"],
   },
   {
@@ -296,7 +296,7 @@ export const mockServices = [
     description: "Specialized care for birds, reptiles, and other exotic pets",
     price: 70,
     duration: "24 hours",
-    image: "/exotic-pet-boarding.jpg",
+    image: "/PBC-6.jpg",
     features: ["Species-specific care", "Climate control", "Specialized diet", "Expert handling"],
   },
   // Training Programs
@@ -330,7 +330,7 @@ export const mockServices = [
     description: "Early socialization and basic training for puppies 8-16 weeks old",
     price: 100,
     duration: "6 weeks (45 min/week)",
-    image: "/puppy-kindergarten.jpg",
+    image: "/TP-1.jpg",
     features: ["Early socialization", "Basic commands", "Bite inhibition", "Handling exercises"],
   },
   {
@@ -339,7 +339,7 @@ export const mockServices = [
     description: "Specialized training for dogs with anxiety, aggression, or other behavioral issues",
     price: 300,
     duration: "10 weeks (1 hour/week)",
-    image: "/behavioral-training.jpg",
+    image: "/TP-2.jpg",
     features: ["Behavior assessment", "Customized training plan", "Desensitization techniques", "Owner education"],
   },
   {
@@ -348,7 +348,7 @@ export const mockServices = [
     description: "Fun and challenging agility training for active dogs",
     price: 180,
     duration: "6 weeks (1 hour/week)",
-    image: "/agility-training.jpg",
+    image: "/TP-3.jpg",
     features: ["Obstacle course training", "Physical fitness", "Mental stimulation", "Competition preparation"],
   },
   {
@@ -357,7 +357,7 @@ export const mockServices = [
     description: "Training and certification program for therapy dog candidates",
     price: 350,
     duration: "12 weeks (1 hour/week)",
-    image: "/therapy-dog-training.jpg",
+    image: "/TP-4.jpg",
     features: ["Temperament evaluation", "Public access training", "Certification preparation", "Ongoing support"],
   },
   {
@@ -366,7 +366,7 @@ export const mockServices = [
     description: "One-on-one personalized training sessions in your home",
     price: 80,
     duration: "1 hour",
-    image: "/private-training.jpg",
+    image: "/TP-5.jpg",
     features: ["Customized training plan", "In-home convenience", "Flexible scheduling", "Family involvement"],
   },
   {
@@ -375,7 +375,7 @@ export const mockServices = [
     description: "Behavior modification and training specifically designed for cats",
     price: 150,
     duration: "4 weeks (45 min/week)",
-    image: "/cat-training.jpg",
+    image: "/TP-6.jpg",
     features: ["Litter box training", "Scratching solutions", "Aggression management", "Environmental enrichment"],
   },
 ]

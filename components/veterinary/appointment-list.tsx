@@ -67,9 +67,9 @@ export function AppointmentList() {
       case "pending":
         return "bg-yellow-100 text-yellow-800"
       case "confirmed":
-        return "bg-blue-100 text-blue-800"
-      case "completed":
         return "bg-green-100 text-green-800"
+      case "completed":
+        return "bg-blue-100 text-blue-800"
       case "cancelled":
         return "bg-red-100 text-red-800"
       default:
@@ -130,7 +130,9 @@ export function AppointmentList() {
                 <User className="mr-2 h-5 w-5" />
                 {appointment.petName}
               </CardTitle>
-              <Badge className={getStatusColor(appointment.status)}>{appointment.status}</Badge>
+              <Badge className={getStatusColor(appointment.status)}>
+                {appointment.status === "confirmed" ? "Approved" : appointment.status}
+              </Badge>
             </div>
           </CardHeader>
           <CardContent>

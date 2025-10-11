@@ -26,6 +26,7 @@ export function SignInForm() {
   const [forgotError, setForgotError] = useState("")
   const [forgotSuccess, setForgotSuccess] = useState("")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [loginType, setLoginType] = useState<"customer" | "veterinarian">("customer")
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,7 +46,14 @@ export function SignInForm() {
       } else {
         const session = await getSession()
         if (session) {
-          router.push("/")
+          if (loginType === "veterinarian" && session.user.role === "veterinarian") {
+            router.push("/vet-dashboard")
+          } else if (loginType === "customer" && session.user.role !== "veterinarian") {
+            router.push("/")
+          } else {
+            setError("Invalid login type for your account")
+            return
+          }
           router.refresh()
         }
       }
@@ -133,6 +141,26 @@ export function SignInForm() {
         <CardDescription>Sign in to your PZS account</CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="space-y-4 mb-6">
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              type="button"
+              variant={loginType === "customer" ? "default" : "outline"}
+              onClick={() => setLoginType("customer")}
+              className="w-full"
+            >
+              Customer Login
+            </Button>
+            <Button
+              type="button"
+              variant={loginType === "veterinarian" ? "default" : "outline"}
+              onClick={() => setLoginType("veterinarian")}
+              className="w-full"
+            >
+              Access the vet portal
+            </Button>
+          </div>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -229,12 +257,19 @@ export function SignInForm() {
             {isLoading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
-        <div className="mt-4 text-center text-sm">
-          Don't have an account?{" "}
-          <Link href="/auth/signup" className="text-primary hover:underline">
-            Sign up
-          </Link>
-        </div>
+        {loginType === "customer" && (
+          <div className="mt-4 text-center text-sm">
+            Don't have an account?{" "}
+            <Link href="/auth/signup" className="text-primary hover:underline">
+              Sign up
+            </Link>
+          </div>
+        )}
+        {loginType === "veterinarian" && (
+          <div className="mt-4 text-center text-sm text-muted-foreground">
+            Veterinarian accounts are managed by administration.
+          </div>
+        )}
       </CardContent>
     </Card>
   )
