@@ -1,6 +1,7 @@
 import { Header } from "../../components/navigation/header"
 import { Footer } from "../../components/footer"
 import { ServiceSlideshow } from "../../components/services/service-slideshow"
+import { ServiceBookingList } from "../../components/services/service-booking-list"
 import { Card, CardContent } from "../../components/ui/card"
 import { Button } from "../../components/ui/button"
 import { Scissors, Heart, GraduationCap, Home, Clock, Shield, Award } from "lucide-react"
@@ -116,6 +117,13 @@ export default function ServicesPage() {
                 />
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Service Bookings */}
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <ServiceBookingList />
           </div>
         </section>
 

@@ -25,13 +25,37 @@ interface Appointment {
   }
 }
 
+interface ServiceBooking {
+  _id: string
+  userId: string
+  serviceId: string
+  serviceName: string
+  petName: string
+  petType: string
+  date: string
+  time: string
+  notes?: string
+  customerName: string
+  customerEmail: string
+  customerPhone: string
+  status: "pending" | "confirmed" | "completed" | "cancelled"
+  price: number
+  user?: {
+    name: string
+    email: string
+  }
+}
+
 export function VetDashboard() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
+  const [serviceBookings, setServiceBookings] = useState<ServiceBooking[]>([])
   const [loading, setLoading] = useState(true)
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<"appointments" | "services">("appointments")
 
   useEffect(() => {
     fetchAllAppointments()
+    fetchAllServiceBookings()
   }, [])
 
   const fetchAllAppointments = async () => {
@@ -43,6 +67,18 @@ export function VetDashboard() {
       }
     } catch (error) {
       console.error("Failed to fetch appointments:", error)
+    }
+  }
+
+  const fetchAllServiceBookings = async () => {
+    try {
+      const response = await fetch("/api/vet/service-bookings")
+      if (response.ok) {
+        const data = await response.json()
+        setServiceBookings(data.bookings)
+      }
+    } catch (error) {
+      console.error("Failed to fetch service bookings:", error)
     } finally {
       setLoading(false)
     }
@@ -66,6 +102,24 @@ export function VetDashboard() {
     }
   }
 
+  const updateServiceBookingStatus = async (bookingId: string, status: string) => {
+    try {
+      const response = await fetch(`/api/vet/service-bookings/${bookingId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      })
+
+      if (response.ok) {
+        fetchAllServiceBookings()
+      }
+    } catch (error) {
+      console.error("Failed to update service booking:", error)
+    }
+  }
+
   const deleteAppointment = async (appointmentId: string) => {
     setDeleteLoading(appointmentId)
     try {
@@ -78,6 +132,23 @@ export function VetDashboard() {
       }
     } catch (error) {
       console.error("Failed to delete appointment:", error)
+    } finally {
+      setDeleteLoading(null)
+    }
+  }
+
+  const deleteServiceBooking = async (bookingId: string) => {
+    setDeleteLoading(bookingId)
+    try {
+      const response = await fetch(`/api/vet/service-bookings/${bookingId}`, {
+        method: "DELETE",
+      })
+
+      if (response.ok) {
+        fetchAllServiceBookings()
+      }
+    } catch (error) {
+      console.error("Failed to delete service booking:", error)
     } finally {
       setDeleteLoading(null)
     }
@@ -109,9 +180,10 @@ export function VetDashboard() {
     return labels[service] || service
   }
 
-  const pendingCount = appointments.filter(apt => apt.status === "pending").length
-  const confirmedCount = appointments.filter(apt => apt.status === "confirmed").length
-  const completedCount = appointments.filter(apt => apt.status === "completed").length
+  const totalItems = appointments.length + serviceBookings.length
+  const pendingCount = appointments.filter(apt => apt.status === "pending").length + serviceBookings.filter(sb => sb.status === "pending").length
+  const confirmedCount = appointments.filter(apt => apt.status === "confirmed").length + serviceBookings.filter(sb => sb.status === "confirmed").length
+  const completedCount = appointments.filter(apt => apt.status === "completed").length + serviceBookings.filter(sb => sb.status === "completed").length
 
   if (loading) {
     return (
@@ -143,8 +215,8 @@ export function VetDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Appointments</p>
-                  <p className="text-2xl font-bold">{appointments.length}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Total Bookings</p>
+                  <p className="text-2xl font-bold">{totalItems}</p>
                 </div>
                 <Calendar className="h-8 w-8 text-muted-foreground" />
               </div>
@@ -185,18 +257,37 @@ export function VetDashboard() {
           </Card>
         </div>
 
-        {/* Appointments List */}
+        {/* Tab Navigation */}
+        <div className="flex space-x-1 mb-8">
+          <Button
+            variant={activeTab === "appointments" ? "default" : "outline"}
+            onClick={() => setActiveTab("appointments")}
+          >
+            Vet Appointments ({appointments.length})
+          </Button>
+          <Button
+            variant={activeTab === "services" ? "default" : "outline"}
+            onClick={() => setActiveTab("services")}
+          >
+            Service Bookings ({serviceBookings.length})
+          </Button>
+        </div>
+
+        {/* Content */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold">All Appointments</h2>
-          {appointments.length === 0 ? (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">No appointments found</p>
-              </CardContent>
-            </Card>
-          ) : (
-            appointments.map((appointment) => (
+          <h2 className="text-2xl font-bold">
+            {activeTab === "appointments" ? "Veterinary Appointments" : "Service Bookings"}
+          </h2>
+          {activeTab === "appointments" ? (
+            appointments.length === 0 ? (
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">No appointments found</p>
+                </CardContent>
+              </Card>
+            ) : (
+              appointments.map((appointment) => (
               <Card key={appointment._id}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -305,7 +396,130 @@ export function VetDashboard() {
                   )}
                 </CardContent>
               </Card>
-            ))
+              ))
+            )
+          ) : (
+            serviceBookings.length === 0 ? (
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">No service bookings found</p>
+                </CardContent>
+              </Card>
+            ) : (
+              serviceBookings.map((booking) => (
+                <Card key={booking._id}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center">
+                        <User className="mr-2 h-5 w-5" />
+                        {booking.serviceName} - {booking.customerName}
+                      </CardTitle>
+                      <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center text-sm">
+                          <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
+                          {format(new Date(booking.date), "EEEE, MMMM d, yyyy")}
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
+                          {booking.time}
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium">Pet:</span> {booking.petName} ({booking.petType})
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-sm">
+                          <span className="font-medium">Price:</span> ₱{booking.price}
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium">Phone:</span> {booking.customerPhone}
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium">Email:</span> {booking.customerEmail}
+                        </div>
+                        {booking.notes && (
+                          <div className="text-sm">
+                            <span className="font-medium">Notes:</span> {booking.notes}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {booking.status === "pending" && (
+                      <div className="mt-4 flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => updateServiceBookingStatus(booking._id, "confirmed")}
+                          className="bg-green-600 hover:bg-green-700"
+                        >
+                          <CheckCircle className="mr-2 h-4 w-4" />
+                          Approve
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => updateServiceBookingStatus(booking._id, "cancelled")}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <XCircle className="mr-2 h-4 w-4" />
+                          Reject
+                        </Button>
+                      </div>
+                    )}
+                    {booking.status === "confirmed" && (
+                      <div className="mt-4">
+                        <Button
+                          size="sm"
+                          onClick={() => updateServiceBookingStatus(booking._id, "completed")}
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
+                          <CheckCircle className="mr-2 h-4 w-4" />
+                          Mark Complete
+                        </Button>
+                      </div>
+                    )}
+                    {(booking.status === "completed" || booking.status === "cancelled") && (
+                      <div className="mt-4">
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              disabled={deleteLoading === booking._id}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              {deleteLoading === booking._id ? "Deleting..." : "Delete"}
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Service Booking</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to permanently delete this service booking for {booking.serviceName}? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => deleteServiceBooking(booking._id)}
+                                className="bg-destructive text-white hover:bg-destructive/90"
+                              >
+                                Delete Permanently
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))
+            )
           )}
         </div>
       </main>
