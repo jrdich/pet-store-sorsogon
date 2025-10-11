@@ -5,7 +5,8 @@ import { signOut } from "next-auth/react"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
-import { Calendar, Clock, User, Stethoscope, CheckCircle, XCircle, LogOut } from "lucide-react"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
+import { Calendar, Clock, User, Stethoscope, CheckCircle, XCircle, LogOut, Trash2 } from "lucide-react"
 import { format } from "date-fns"
 
 interface Appointment {
@@ -27,6 +28,7 @@ interface Appointment {
 export function VetDashboard() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
+  const [deleteLoading, setDeleteLoading] = useState<string | null>(null)
 
   useEffect(() => {
     fetchAllAppointments()
@@ -61,6 +63,23 @@ export function VetDashboard() {
       }
     } catch (error) {
       console.error("Failed to update appointment:", error)
+    }
+  }
+
+  const deleteAppointment = async (appointmentId: string) => {
+    setDeleteLoading(appointmentId)
+    try {
+      const response = await fetch(`/api/vet/appointments/${appointmentId}`, {
+        method: "DELETE",
+      })
+
+      if (response.ok) {
+        fetchAllAppointments()
+      }
+    } catch (error) {
+      console.error("Failed to delete appointment:", error)
+    } finally {
+      setDeleteLoading(null)
     }
   }
 
@@ -249,6 +268,39 @@ export function VetDashboard() {
                         <CheckCircle className="mr-2 h-4 w-4" />
                         Mark Complete
                       </Button>
+                    </div>
+                  )}
+                  {(appointment.status === "completed" || appointment.status === "cancelled") && (
+                    <div className="mt-4">
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            disabled={deleteLoading === appointment._id}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            {deleteLoading === appointment._id ? "Deleting..." : "Delete"}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Appointment</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to permanently delete this appointment for {appointment.petName}? This action cannot be undone and will remove the record from both veterinary and customer dashboards.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deleteAppointment(appointment._id)}
+                              className="bg-destructive text-white hover:bg-destructive/90"
+                            >
+                              Delete Permanently
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   )}
                 </CardContent>

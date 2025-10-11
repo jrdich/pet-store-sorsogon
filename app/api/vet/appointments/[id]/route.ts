@@ -40,3 +40,30 @@ export async function PATCH(
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user || session.user.role !== "veterinarian") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    await connectDB()
+    const { id } = await params
+
+    const appointment = await Appointment.findByIdAndDelete(id)
+
+    if (!appointment) {
+      return NextResponse.json({ error: "Appointment not found" }, { status: 404 })
+    }
+
+    return NextResponse.json({ message: "Appointment deleted successfully" })
+  } catch (error) {
+    console.error("Vet appointment DELETE error:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+  }
+}
